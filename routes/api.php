@@ -16,4 +16,4 @@ Route::post('/register', [AuthController::class, 'register'])->name('user_regist
 Route::resource('students', StudentController::class);
 
 //Teachers API
-// Route::resource('teachers', TeacherController::class);
+Route::resource('teachers', TeacherController::class);

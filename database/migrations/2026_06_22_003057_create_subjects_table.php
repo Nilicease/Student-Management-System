@@ -18,6 +18,8 @@ return new class extends Migration
             $table->tinyInteger('units')->nullable();
             $table->foreignId('teacher_id')
                 ->constrained('teachers');
+            $table->foreignId('student_id')
+                ->constrained('students');
             $table->timestamps();
         });
     }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')
                 ->constrained('users');
+            $table->string('name');
             $table->integer('employee_number')->unique();
             $table->string('department');
             $table->boolean('is_active')->default(true);

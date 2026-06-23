@@ -29,4 +29,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function students()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    public function teachers()
+    {
+        return $this->hasOne(Teacher::class);
+    }
 }

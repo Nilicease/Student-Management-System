@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')
                 ->constrained('students');
-            $table->foreignId('teacer_id')
-                ->constrained('teachers');
+            $table->foreignId('subject_id')
+                ->constrained('subjects');
             $table->decimal('grade', 5, 2);
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }

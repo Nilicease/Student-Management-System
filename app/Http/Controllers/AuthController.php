@@ -21,12 +21,7 @@ class AuthController extends Controller
 
         $user = User::create($validated);
 
-        return response()->json([
-            'message' => "User was created!",
-            'data' => [
-                'name' => $user->name,
-                'email' => $user->email
-            ]
-        ], 201);
+        return redirect()->route('students.index')
+            ->with('message', 'Created User Successfully');
     }
 }
