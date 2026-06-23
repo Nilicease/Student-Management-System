@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')
                 ->constrained('users');
-            $table->integer('student_number')->nullable();
-            $table->string('course')->nullable();
-            $table->integer('year_level')->nullable()->default(1);
+            $table->string('name');
+            $table->integer('student_number')->unique();
+            $table->string('course');
+            $table->integer('year_level')->default(1);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

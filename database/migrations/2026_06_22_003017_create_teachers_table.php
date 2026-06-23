@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')
                 ->constrained('users');
-            $table->integer('employee_number')->nullable();
-            $table->string('department')->nullable();
+            $table->integer('employee_number')->unique();
+            $table->string('department');
             $table->boolean('is_active')->default(true);
-            $table->timestamps();
+            $table->timestamp('released_at')->nullable();
         });
     }
 
