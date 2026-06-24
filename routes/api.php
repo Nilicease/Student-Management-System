@@ -9,9 +9,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//Auth
-Route::post('/register', [AuthController::class, 'register'])->name('user_register');
-
 //Students API
 Route::resource('students', StudentController::class);
 

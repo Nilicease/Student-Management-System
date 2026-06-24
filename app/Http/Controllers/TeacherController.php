@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +16,8 @@ class TeacherController extends Controller
     {
         $teachers = Teacher::all();
 
-        return view('teachers.index', compact('teacher'));
+        // return view('teachers.index', compact('teachers'));
+        return response()->json($teachers, 201);
     }
 
     /**
@@ -32,7 +34,8 @@ class TeacherController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|min:100',
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:100',
             'employee_number' => 'required|integer',
             'department' => 'required|string'
         ]);
@@ -49,7 +52,7 @@ class TeacherController extends Controller
     {
         $teacher = Teacher::findOrfail($id);
 
-        return view('teachers.show', compact('teacher'));
+        return view('teachers.show', compact('teachers'));
     }
 
     /**
@@ -59,7 +62,7 @@ class TeacherController extends Controller
     {
         $teacher = Teacher::findOrfail($id);
 
-        return view('teachers.edit', compact('teacher'));
+        return view('teachers.edit', compact('teachers'));
     }
 
     /**
@@ -67,17 +70,23 @@ class TeacherController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $teacher = Teacher::findOrfail($id);
+        $teacherID = Teacher::findOrfail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|min:100',
-            'employee_number' => 'required|integer',
-            'department' => 'required|string'
+            'name' => 'sometimes|required|string|max:100',
+            'employee_number' => 'sometimes|required|integer',
+            'department' => 'sometimes|required|string',
+            'is_active' => 'sometimes|required|boolean'
         ]);
 
-        $teacher->update($validated);
+        $teacher = $teacherID->update($validated);
 
-        return redirect()->route('teachers.index')->with('message', 'Update Successfully');
+        // return redirect()->route('teachers.index')->with('message', 'Update Successfully');
+
+        return response()->json([
+            'message' => 'Updated Successfully',
+            'data' => $teacher
+        ]);
     }
 
     /**

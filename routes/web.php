@@ -10,10 +10,10 @@ Route::get('/', function () {
 });
 
 //Auth
-Route::post('/register', [AuthController::class, 'register'])->name('user_register');
+// Route::post('/register', [AuthController::class, 'register'])->name('user_register');
 
 //Students API
-Route::resource('students', StudentController::class);
+// Route::resource('students', StudentController::class);
 
 //Teachers API
 // Route::resource('teachers', TeacherController::class);

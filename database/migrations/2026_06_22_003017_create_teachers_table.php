@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('employee_number')->unique();
             $table->string('department');
             $table->boolean('is_active')->default(true);
-            $table->timestamp('released_at')->nullable();
+            $table->timestamps();
         });
     }
 
