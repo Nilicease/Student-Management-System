@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Subject;
 
-class AdminController extends Controller
+class SubjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $subjects = Subject::all();
+
+        return view('subjects.index', compact('subjects'));
     }
 
     /**
@@ -19,7 +22,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        return view('subjects.create');
     }
 
     /**
@@ -27,7 +30,20 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'teacher_id' => 'required|exists:teachers,id',
+            'teacher_id.*' => 'exists:teachers,id',
+            'student_id' => 'required|exists:students,id',
+            'student_id.*' => 'exists:students,id',
+            'name' => 'required|string|max:100',
+            'code' => 'required|string|max:10',
+            'units' => 'required|integer'
+        ]);
+
+        Subject::create($validatedData);
+
+        return redirect()->route('subjects.index')
+            ->with('message', 'Created Successfully');
     }
 
     /**
@@ -35,7 +51,9 @@ class AdminController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $subject = Subject::findOrFail($id);
+
+        return view('subjects.show', compact('subject'));
     }
 
     /**
@@ -43,7 +61,9 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $subject = Subject::findOrFail($id);
+
+        return view('subjects.edit', compact('subject'));
     }
 
     /**
@@ -51,7 +71,18 @@ class AdminController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $subject = Subject::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:100',
+            'code' => 'required|string|max:10',
+            'units' => 'required|integer'
+        ]);
+
+        $subject->update($validatedData);
+
+        return redirect()->route('subjects.index')
+            ->with('message', 'Updated Successfully');
     }
 
     /**

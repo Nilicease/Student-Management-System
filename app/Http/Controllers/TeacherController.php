@@ -16,8 +16,7 @@ class TeacherController extends Controller
     {
         $teachers = Teacher::all();
 
-        // return view('teachers.index', compact('teachers'));
-        return response()->json($teachers, 201);
+        return view('teachers.index', compact('teachers'));
     }
 
     /**
@@ -60,7 +59,7 @@ class TeacherController extends Controller
      */
     public function edit(string $id)
     {
-        $teacher = Teacher::findOrfail($id);
+        $teachers = Teacher::findOrfail($id);
 
         return view('teachers.edit', compact('teachers'));
     }
@@ -79,14 +78,9 @@ class TeacherController extends Controller
             'is_active' => 'sometimes|required|boolean'
         ]);
 
-        $teacher = $teacherID->update($validated);
+        $teacherID->update($validated);
 
-        // return redirect()->route('teachers.index')->with('message', 'Update Successfully');
-
-        return response()->json([
-            'message' => 'Updated Successfully',
-            'data' => $teacher
-        ]);
+        return redirect()->route('teachers.index')->with('message', 'Update Successfully');
     }
 
     /**

@@ -9,10 +9,12 @@ class Student extends Model
     protected $fillable = [
         'user_id',
         'teacher_id',
+        'subject_id',
         'name',
         'student_number',
         'course',
-        'year_level'
+        'year_level',
+        'is_active'
     ];
 
     public function user()
@@ -22,16 +24,13 @@ class Student extends Model
 
     public function teachers()
     {
-        return $this->belongsToMany(Teacher::class);
+        return $this->belongsToMany(Teacher::class, 'student_teacher');
     }
 
     public function subjects()
     {
-        return $this->hasMany(Subject::class);
-    }
-
-    public function grades()
-    {
-        return $this->hasMany(Grade::class);
+        return $this->belongsToMany(Subject::class, 'student_subject')
+            ->using(StudentSubject::class)
+            ->withPivot('grade', 'remarks');
     }
 }

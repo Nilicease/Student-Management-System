@@ -16,16 +16,13 @@ class Subject extends Model
 
     public function students()
     {
-        return $this->belongsToMany(Student::class);
+        return $this->belongsToMany(Student::class, 'student_subject')
+            ->using(StudentSubject::class)
+            ->withPivot('grade', 'remarks');
     }
 
     public function teachers()
     {
-        return $this->belongsToMany(Teacher::class);
-    }
-
-    public function grades()
-    {
-        return $this->hasMany(Grade::class);
+        return $this->belongsTo(Teacher::class);
     }
 }

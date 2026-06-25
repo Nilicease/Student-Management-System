@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -11,7 +12,9 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $students = Student::all();
+
+        return view('students.index', compact('students'));
     }
 
     /**
@@ -19,7 +22,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        return view('students.create');
     }
 
     /**
@@ -27,7 +30,22 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'teacher_id' => 'required|array',
+            'teacher_id.*' => 'exists:teachers,id',
+            'subject_id' => 'required|array',
+            'subject_id.*' => 'exists:subjects,id',
+            'name' => 'required|string|max:100',
+            'student' => 'required|integer',
+            'course' => 'required|string',
+            'year_level' => 'required|integer'
+        ]);
+
+        Student::create($validatedData);
+
+        return redirect()->route('students.index')
+            ->with('message', 'Created Successfully');
     }
 
     /**
@@ -35,7 +53,9 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $student = Student::findOrFail($id);
+
+        return view('students.show', compact('student'));
     }
 
     /**
@@ -43,7 +63,9 @@ class StudentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $student = Student::findOrFail($id);
+
+        return view('students.edit', compact('student'));
     }
 
     /**
@@ -51,7 +73,24 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $student = Student::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'teacher_id' => 'required|array',
+            'teacher_id.*' => 'exists:teachers,id',
+            'subject_id' => 'required|array',
+            'subject_id.*' => 'exists:subjects,id',
+            'name' => 'required|string|max:100',
+            'student' => 'required|integer',
+            'course' => 'required|string',
+            'year_level' => 'required|integer'
+        ]);
+
+        $student->update($validatedData);
+
+        return redirect()->route('students.index')
+            ->with('message', 'Updated Successfully');
     }
 
     /**
@@ -59,6 +98,10 @@ class StudentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $student = Student::findOrFail($id);
+        $student->update(['is_active' => false]);
+
+        return redirect()->route('students.index')
+            ->with('message', 'Deleted Successfully');
     }
 }
