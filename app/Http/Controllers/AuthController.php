@@ -9,41 +9,43 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
 
-    public function showLoginForm()
-    {
-        return view('auth.login');
-    }
-
-    public function showRegisterForm()
-    {
-        return view('auth.register');
-    }
-
     public function login(Request $request)
     {
-
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials)) {
-            // $request->session()->regenerate();
+            $request->session()->regenerate();
 
-            // return redirect()->intended('/dashboard');
-            return response()->json(['message' => 'Login successful'], 200);
+            $user = Auth::user();
+            $hasAssignedRole = in_array($user->role, ['admin', 'teacher', 'student'], true);
+            $isApproved = !empty($user->email_verified_at);
+
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            if ($isApproved && $hasAssignedRole) {
+                return redirect()->route('home');
+            }
+
+            return redirect()->route('user.pending');
         }
 
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
     public function logout()
     {
         Auth::logout();
-        // request()->session()->invalidate();
-        // request()->session()->regenerateToken();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
 
-        return response()->json(['message' => 'Logged out successfully'], 200);
+        return redirect()->route('home');
     }
 
     public function register(Request $request)
@@ -55,7 +57,9 @@ class AuthController extends Controller
             'password' => 'required|min:8',
         ]);
 
-        $user = User::create($validated);
+        dd($validated);
+
+        User::create($validated);
 
         return redirect()->route('students.index')
             ->with('message', 'Created User Successfully');
