@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
+    // Mass-assignable student attributes
     protected $fillable = [
         'user_id',
         'teacher_id',
@@ -17,16 +18,19 @@ class Student extends Model
         'is_active'
     ];
 
+    // Link student to a user account
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    // Link student to many teachers through pivot
     public function teachers()
     {
         return $this->belongsToMany(Teacher::class, 'student_teacher');
     }
 
+    // Link student to many subjects and store grade data on pivot
     public function subjects()
     {
         return $this->belongsToMany(Subject::class, 'student_subject')

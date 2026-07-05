@@ -7,9 +7,7 @@ use App\Models\Subject;
 
 class SubjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Show a list of all subjects
     public function index()
     {
         $subjects = Subject::all();
@@ -17,17 +15,13 @@ class SubjectController extends Controller
         return view('subjects.index', compact('subjects'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Show the subject creation form
     public function create()
     {
         return view('subjects.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Validate input and save a new subject record
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -46,9 +40,7 @@ class SubjectController extends Controller
             ->with('message', 'Created Successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Show details for a single subject
     public function show(string $id)
     {
         $subject = Subject::findOrFail($id);
@@ -56,9 +48,7 @@ class SubjectController extends Controller
         return view('subjects.show', compact('subject'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Show the subject edit form
     public function edit(string $id)
     {
         $subject = Subject::findOrFail($id);
@@ -66,9 +56,7 @@ class SubjectController extends Controller
         return view('subjects.edit', compact('subject'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Validate and update an existing subject record
     public function update(Request $request, string $id)
     {
         $subject = Subject::findOrFail($id);
@@ -85,9 +73,7 @@ class SubjectController extends Controller
             ->with('message', 'Updated Successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Delete a subject record (not implemented yet)
     public function destroy(string $id)
     {
         //

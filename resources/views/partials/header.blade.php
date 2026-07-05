@@ -14,8 +14,11 @@
                 <a class="nav-link text-white-50" href="{{ route('admin.subjects') }}">Subjects</a>
                 <a class="nav-link text-white-50" href="{{ route('admin.courses') }}">Courses</a>
                 <a class="nav-link text-white-50" href="{{ route('admin.profile') }}">Profile</a>
-                <a class="nav-link text-white-50" href="{{ route('admin.logout') }}">Logout</a>
             </nav>
+                <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <button type="submit" class="nav-link text-white-50 p-0">Logout</button>
+                </form>
         </aside>
 
         <div class="flex-grow-1">
@@ -46,7 +49,10 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Sign In</a></li>
                 @else
                     <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
+                    <form action="{{ route('logout') }}" method="post">
+                        @csrf
+                        <button type="submit" class="btn btn-link nav-link">Logout</button>
+                    </form>
                 @endif
             </ul>
         </div>

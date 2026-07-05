@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-
+    // Authenticate users and redirect by role or approval status
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -20,14 +21,13 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
-            $hasAssignedRole = in_array($user->role, ['admin', 'teacher', 'student'], true);
             $isApproved = !empty($user->email_verified_at);
 
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
 
-            if ($isApproved && $hasAssignedRole) {
+            if ($isApproved) {
                 return redirect()->route('home');
             }
 
@@ -39,6 +39,7 @@ class AuthController extends Controller
         ]);
     }
 
+    // Log out the current authenticated user
     public function logout()
     {
         Auth::logout();
@@ -48,20 +49,22 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
+    // Register a new user account and mark it pending approval
     public function register(Request $request)
     {
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
+            'password' => 'required|min:8|confirmed',
         ]);
 
-        dd($validated);
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
 
-        User::create($validated);
-
-        return redirect()->route('students.index')
-            ->with('message', 'Created User Successfully');
+        return redirect()->route('user.pending')
+            ->with('message', 'Your account has been created and is pending approval.');
     }
 }

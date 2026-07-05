@@ -7,9 +7,7 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Show a table of all students
     public function index()
     {
         $students = Student::all();
@@ -17,17 +15,13 @@ class StudentController extends Controller
         return view('students.index', compact('students'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Show the student creation form
     public function create()
     {
         return view('students.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Validate input and save a new student record
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -48,9 +42,7 @@ class StudentController extends Controller
             ->with('message', 'Created Successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Show details for a single student
     public function show(string $id)
     {
         $student = Student::findOrFail($id);
@@ -58,9 +50,7 @@ class StudentController extends Controller
         return view('students.show', compact('student'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Show the student edit form
     public function edit(string $id)
     {
         $student = Student::findOrFail($id);
@@ -68,9 +58,7 @@ class StudentController extends Controller
         return view('students.edit', compact('student'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Validate and update an existing student record
     public function update(Request $request, string $id)
     {
         $student = Student::findOrFail($id);
@@ -93,9 +81,7 @@ class StudentController extends Controller
             ->with('message', 'Updated Successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Soft-delete a student by marking it inactive
     public function destroy(string $id)
     {
         $student = Student::findOrFail($id);

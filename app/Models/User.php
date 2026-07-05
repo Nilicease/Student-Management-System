@@ -17,11 +17,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // Hash user passwords automatically and cast verification timestamp
     protected function casts(): array
     {
         return [
@@ -30,11 +26,13 @@ class User extends Authenticatable
         ];
     }
 
+    // One user can be linked to one student profile
     public function students()
     {
         return $this->hasOne(Student::class);
     }
 
+    // One user can also be linked to one teacher profile
     public function teachers()
     {
         return $this->hasOne(Teacher::class);

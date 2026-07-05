@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class StudentSubject extends Pivot
 {
+    // Pivot attributes for student-subject grade records
     protected $fillable = [
         'student_id',
         'subject_id',

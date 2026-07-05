@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Show a list of all teachers
     public function index()
     {
         $teachers = Teacher::all();
@@ -19,17 +17,13 @@ class TeacherController extends Controller
         return view('teachers.index', compact('teachers'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Show the teacher creation form
     public function create()
     {
         return view('teachers.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Validate input and save a new teacher record
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -44,9 +38,7 @@ class TeacherController extends Controller
         return redirect()->route('teachers.index')->with('message', 'Created Successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Show details for a single teacher
     public function show(string $id)
     {
         $teacher = Teacher::findOrfail($id);
@@ -54,9 +46,7 @@ class TeacherController extends Controller
         return view('teachers.show', compact('teachers'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Show the teacher edit form
     public function edit(string $id)
     {
         $teachers = Teacher::findOrfail($id);
@@ -64,9 +54,7 @@ class TeacherController extends Controller
         return view('teachers.edit', compact('teachers'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Validate and update an existing teacher record
     public function update(Request $request, string $id)
     {
         $teacherID = Teacher::findOrfail($id);
@@ -83,9 +71,7 @@ class TeacherController extends Controller
         return redirect()->route('teachers.index')->with('message', 'Update Successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Soft-delete a teacher by marking them inactive
     public function destroy(string $id)
     {
         $teacher = Teacher::findOrfail($id);

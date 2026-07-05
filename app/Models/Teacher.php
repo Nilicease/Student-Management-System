@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
 {
+    // Mass-assignable teacher attributes
     protected $fillable = [
         'user_id',
         'name',
@@ -14,16 +15,19 @@ class Teacher extends Model
         'is_active'
     ];
 
+    // Link teacher to a user account
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    // A teacher may be linked to many students
     public function students()
     {
         return $this->hasMany(Student::class);
     }
 
+    // A teacher may teach many subjects
     public function subjects()
     {
         return $this->hasMany(Subject::class);
