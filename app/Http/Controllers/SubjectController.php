@@ -26,9 +26,6 @@ class SubjectController extends Controller
     {
         $validatedData = $request->validate([
             'teacher_id' => 'required|exists:teachers,id',
-            'teacher_id.*' => 'exists:teachers,id',
-            'student_id' => 'required|exists:students,id',
-            'student_id.*' => 'exists:students,id',
             'name' => 'required|string|max:100',
             'code' => 'required|string|max:10',
             'units' => 'required|integer'
@@ -62,6 +59,7 @@ class SubjectController extends Controller
         $subject = Subject::findOrFail($id);
 
         $validatedData = $request->validate([
+            'teacher_id' => 'required|exists:teachers,id',
             'name' => 'required|string|max:100',
             'code' => 'required|string|max:10',
             'units' => 'required|integer'
@@ -73,9 +71,13 @@ class SubjectController extends Controller
             ->with('message', 'Updated Successfully');
     }
 
-    // Delete a subject record (not implemented yet)
+    // Delete a subject record
     public function destroy(string $id)
     {
-        //
+        $subject = Subject::findOrFail($id);
+        $subject->delete();
+
+        return redirect()->route('subjects.index')
+            ->with('message', 'Deleted Successfully');
     }
 }

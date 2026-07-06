@@ -1,30 +1,30 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('authForm');
+document.addEventListener('DOMContentLoaded', (): void => {
+    const form = document.getElementById('authForm') as HTMLFormElement | null;
     if (!form) return;
 
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const confirmInput = document.getElementById('password_confirmation');
+    const nameInput = document.getElementById('name') as HTMLInputElement | null;
+    const emailInput = document.getElementById('email') as HTMLInputElement | null;
+    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+    const confirmInput = document.getElementById('password_confirmation') as HTMLInputElement | null;
 
-    const nameError = document.getElementById('nameError');
-    const emailError = document.getElementById('emailError');
-    const passwordError = document.getElementById('passwordError');
-    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const nameError = document.getElementById('nameError') as HTMLElement | null;
+    const emailError = document.getElementById('emailError') as HTMLElement | null;
+    const passwordError = document.getElementById('passwordError') as HTMLElement | null;
+    const confirmPasswordError = document.getElementById('confirmPasswordError') as HTMLElement | null;
 
-    function showError(element, message) {
+    function showError(element: HTMLElement | null, message: string): void {
         if (!element) return;
         element.textContent = message;
         element.classList.remove('d-none');
     }
 
-    function clearError(element) {
+    function clearError(element: HTMLElement | null): void {
         if (!element) return;
         element.textContent = '';
         element.classList.add('d-none');
     }
 
-    function validateName() {
+    function validateName(): boolean {
         if (!nameInput) return true;
         if (!nameInput.value.trim()) {
             showError(nameError, 'Full name is required.');
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 
-    function validateEmail() {
+    function validateEmail(): boolean {
         if (!emailInput) return true;
         if (!emailInput.value.trim()) {
             showError(emailError, 'Email is required.');
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 
-    function validatePassword() {
+    function validatePassword(): boolean {
         if (!passwordInput) return true;
         if (!passwordInput.value) {
             showError(passwordError, 'Password is required.');
@@ -62,13 +62,13 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 
-    function validateConfirmPassword() {
+    function validateConfirmPassword(): boolean {
         if (!confirmInput) return true;
         if (!confirmInput.value) {
             showError(confirmPasswordError, 'Please confirm your password.');
             return false;
         }
-        if (confirmInput.value !== passwordInput.value) {
+        if (confirmInput.value !== passwordInput?.value) {
             showError(confirmPasswordError, 'Passwords do not match.');
             return false;
         }
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 
-    function validateForm() {
+    function validateForm(): boolean {
         const isNameValid = validateName();
         const isEmailValid = validateEmail();
         const isPasswordValid = validatePassword();
@@ -84,9 +84,9 @@ document.addEventListener('DOMContentLoaded', function () {
         return isNameValid && isEmailValid && isPasswordValid && isConfirmValid;
     }
 
-    [nameInput, emailInput, passwordInput, confirmInput].forEach((input) => {
+    [nameInput, emailInput, passwordInput, confirmInput].forEach((input): void => {
         if (!input) return;
-        input.addEventListener('input', () => {
+        input.addEventListener('input', (): void => {
             if (input === nameInput) validateName();
             if (input === emailInput) validateEmail();
             if (input === passwordInput) {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    form.addEventListener('submit', function (event) {
+    form.addEventListener('submit', (event: Event): void => {
         event.preventDefault();
 
         if (validateForm()) {

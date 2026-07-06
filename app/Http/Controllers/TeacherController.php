@@ -43,15 +43,15 @@ class TeacherController extends Controller
     {
         $teacher = Teacher::findOrfail($id);
 
-        return view('teachers.show', compact('teachers'));
+        return view('teachers.show', compact('teacher'));
     }
 
     // Show the teacher edit form
     public function edit(string $id)
     {
-        $teachers = Teacher::findOrfail($id);
+        $teacher = Teacher::findOrfail($id);
 
-        return view('teachers.edit', compact('teachers'));
+        return view('teachers.edit', compact('teacher'));
     }
 
     // Validate and update an existing teacher record

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
@@ -74,4 +75,7 @@ Route::middleware('auth')->group(function () {
 
     // Resource routes for teacher CRUD operations
     Route::resource('teachers', TeacherController::class);
+
+    // Resource routes for subject CRUD operations
+    Route::resource('subjects', SubjectController::class);
 });

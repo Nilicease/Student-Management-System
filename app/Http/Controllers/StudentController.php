@@ -26,17 +26,25 @@ class StudentController extends Controller
     {
         $validatedData = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'teacher_id' => 'required|array',
-            'teacher_id.*' => 'exists:teachers,id',
-            'subject_id' => 'required|array',
-            'subject_id.*' => 'exists:subjects,id',
             'name' => 'required|string|max:100',
-            'student' => 'required|integer',
+            'student_number' => 'required|integer|unique:students,student_number',
             'course' => 'required|string',
-            'year_level' => 'required|integer'
+            'year_level' => 'required|integer',
+            'teacher_ids' => 'nullable|array',
+            'teacher_ids.*' => 'exists:teachers,id',
+            'subject_ids' => 'nullable|array',
+            'subject_ids.*' => 'exists:subjects,id',
         ]);
 
-        Student::create($validatedData);
+        $student = Student::create($validatedData);
+
+        if ($request->has('teacher_ids')) {
+            $student->teachers()->sync($request->input('teacher_ids', []));
+        }
+
+        if ($request->has('subject_ids')) {
+            $student->subjects()->sync($request->input('subject_ids', []));
+        }
 
         return redirect()->route('students.index')
             ->with('message', 'Created Successfully');
@@ -65,17 +73,25 @@ class StudentController extends Controller
 
         $validatedData = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'teacher_id' => 'required|array',
-            'teacher_id.*' => 'exists:teachers,id',
-            'subject_id' => 'required|array',
-            'subject_id.*' => 'exists:subjects,id',
             'name' => 'required|string|max:100',
-            'student' => 'required|integer',
+            'student_number' => 'required|integer|unique:students,student_number,' . $student->id,
             'course' => 'required|string',
-            'year_level' => 'required|integer'
+            'year_level' => 'required|integer',
+            'teacher_ids' => 'nullable|array',
+            'teacher_ids.*' => 'exists:teachers,id',
+            'subject_ids' => 'nullable|array',
+            'subject_ids.*' => 'exists:subjects,id',
         ]);
 
         $student->update($validatedData);
+
+        if ($request->has('teacher_ids')) {
+            $student->teachers()->sync($request->input('teacher_ids', []));
+        }
+
+        if ($request->has('subject_ids')) {
+            $student->subjects()->sync($request->input('subject_ids', []));
+        }
 
         return redirect()->route('students.index')
             ->with('message', 'Updated Successfully');
