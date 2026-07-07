@@ -12,29 +12,55 @@
         $role = optional(auth()->user())->role ?? 'guest';
     @endphp
 
-    @include('partials.header', ['role' => $role])
+    @if($role === 'admin')
+        <div class="d-flex min-vh-100">
+            @include('partials.header', ['role' => $role])
 
-    <main class="container py-4">
-        @auth
-            @switch($role)
-                @case('admin')
+            <div class="flex-grow-1 d-flex flex-column">
+                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top">
+                    <div class="container-fluid px-4">
+                        <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#adminSidebar">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <span class="navbar-brand mb-0 h5">Student Management System</span>
+                        <div class="ms-auto d-flex align-items-center gap-2">
+                            <span class="badge bg-primary-subtle text-primary">Admin</span>
+                            <form action="{{ route('logout') }}" method="post" class="d-inline">
+                                @csrf
+                                <button class="btn btn-outline-danger btn-sm" type="submit">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </nav>
+
+                <main class="flex-grow-1 p-4 bg-light">
                     @yield('admin')
-                    @break
-                @case('student')
-                    @yield('student')
-                    @break
-                @case('teacher')
-                    @yield('teacher')
-                    @break
-                @default
-                    @yield('user')
-            @endswitch
-        @else
-            @yield('guest')
-        @endauth
-    </main>
+                </main>
+            </div>
+        </div>
+    @else
+        @include('partials.header', ['role' => $role])
 
-    @if($role !== 'admin')
+        <main class="container py-4">
+            @auth
+                @switch($role)
+                    @case('admin')
+                        @yield('admin')
+                        @break
+                    @case('student')
+                        @yield('student')
+                        @break
+                    @case('teacher')
+                        @yield('teacher')
+                        @break
+                    @default
+                        @yield('user')
+                @endswitch
+            @else
+                @yield('guest')
+            @endauth
+        </main>
+
         @include('partials.footer', ['role' => $role])
     @endif
 

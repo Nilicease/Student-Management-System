@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Public landing page
@@ -33,49 +36,21 @@ Route::middleware('auth')->group(function () {
         return view('guest.user');
     })->name('user.pending');
 
-    Route::prefix('admin')->name('admin.')->group(function () {
-        // Admin dashboard home
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+    Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Admin users management page
-        Route::get('/users', function () {
-            return view('admin.users');
-        })->name('users');
+        Route::resource('teachers', TeacherController::class);
+        Route::resource('users', UserController::class);
+        Route::resource('students', StudentController::class);
+        Route::resource('courses', CourseController::class);
+        Route::resource('subjects', SubjectController::class);
 
-        // Admin teacher management page
-        Route::get('/teachers', function () {
-            return view('admin.teachers');
-        })->name('teachers');
-
-        // Admin student management page
-        Route::get('/students', function () {
-            return view('admin.students');
-        })->name('students');
-
-        // Admin subject management page
-        Route::get('/subjects', function () {
-            return view('admin.subjects');
-        })->name('subjects');
-
-        // Admin course management page
-        Route::get('/courses', function () {
-            return view('admin.courses');
-        })->name('courses');
-
-        // Admin profile page
         Route::get('/profile', function () {
             return view('admin.profile');
         })->name('profile');
     });
 
-    // Resource routes for student CRUD operations
     Route::resource('students', StudentController::class);
-
-    // Resource routes for teacher CRUD operations
     Route::resource('teachers', TeacherController::class);
-
-    // Resource routes for subject CRUD operations
     Route::resource('subjects', SubjectController::class);
 });

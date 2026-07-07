@@ -2,108 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Student;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class StudentController extends Controller
 {
-    // Show a table of all students
-    public function index()
+    public function index(): View
     {
-        $students = Student::all();
+        $students = Student::query()
+            ->when(request('search'), function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('course', 'like', "%{$search}%")
+                    ->orWhere('student_number', 'like', "%{$search}%");
+            })
+            ->when(request('course'), function ($query, $course) {
+                $query->where('course', 'like', "%{$course}%");
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('students.index', compact('students'));
+        return view('admin.students', compact('students'));
     }
 
-    // Show the student creation form
-    public function create()
+    public function create(): View
     {
-        return view('students.create');
+        return view('admin.students');
     }
 
-    // Validate input and save a new student record
-    public function store(Request $request)
+    public function store(StoreStudentRequest $request): RedirectResponse
     {
-        $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'name' => 'required|string|max:100',
-            'student_number' => 'required|integer|unique:students,student_number',
-            'course' => 'required|string',
-            'year_level' => 'required|integer',
-            'teacher_ids' => 'nullable|array',
-            'teacher_ids.*' => 'exists:teachers,id',
-            'subject_ids' => 'nullable|array',
-            'subject_ids.*' => 'exists:subjects,id',
-        ]);
+        Student::create($request->validated());
 
-        $student = Student::create($validatedData);
-
-        if ($request->has('teacher_ids')) {
-            $student->teachers()->sync($request->input('teacher_ids', []));
-        }
-
-        if ($request->has('subject_ids')) {
-            $student->subjects()->sync($request->input('subject_ids', []));
-        }
-
-        return redirect()->route('students.index')
-            ->with('message', 'Created Successfully');
+        return redirect()->route('admin.students.index')->with('success', 'Student created successfully.');
     }
 
-    // Show details for a single student
-    public function show(string $id)
+    public function show(Student $student): View
     {
-        $student = Student::findOrFail($id);
-
-        return view('students.show', compact('student'));
+        return view('admin.students', compact('student'));
     }
 
-    // Show the student edit form
-    public function edit(string $id)
+    public function edit(Student $student): View
     {
-        $student = Student::findOrFail($id);
-
-        return view('students.edit', compact('student'));
+        return view('admin.students', compact('student'));
     }
 
-    // Validate and update an existing student record
-    public function update(Request $request, string $id)
+    public function update(UpdateStudentRequest $request, Student $student): RedirectResponse
     {
-        $student = Student::findOrFail($id);
+        $student->update($request->validated());
 
-        $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'name' => 'required|string|max:100',
-            'student_number' => 'required|integer|unique:students,student_number,' . $student->id,
-            'course' => 'required|string',
-            'year_level' => 'required|integer',
-            'teacher_ids' => 'nullable|array',
-            'teacher_ids.*' => 'exists:teachers,id',
-            'subject_ids' => 'nullable|array',
-            'subject_ids.*' => 'exists:subjects,id',
-        ]);
-
-        $student->update($validatedData);
-
-        if ($request->has('teacher_ids')) {
-            $student->teachers()->sync($request->input('teacher_ids', []));
-        }
-
-        if ($request->has('subject_ids')) {
-            $student->subjects()->sync($request->input('subject_ids', []));
-        }
-
-        return redirect()->route('students.index')
-            ->with('message', 'Updated Successfully');
+        return redirect()->route('admin.students.index')->with('success', 'Student updated successfully.');
     }
 
-    // Soft-delete a student by marking it inactive
-    public function destroy(string $id)
+    public function destroy(Student $student): RedirectResponse
     {
-        $student = Student::findOrFail($id);
         $student->update(['is_active' => false]);
 
-        return redirect()->route('students.index')
-            ->with('message', 'Deleted Successfully');
+        return redirect()->route('admin.students.index')->with('success', 'Student disabled successfully.');
     }
 }

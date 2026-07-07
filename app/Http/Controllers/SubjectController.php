@@ -2,82 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreSubjectRequest;
+use App\Http\Requests\UpdateSubjectRequest;
 use App\Models\Subject;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class SubjectController extends Controller
 {
-    // Show a list of all subjects
-    public function index()
+    public function index(): View
     {
-        $subjects = Subject::all();
+        $subjects = Subject::query()
+            ->when(request('search'), function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%");
+            })
+            ->when(request('course'), function ($query, $course) {
+                $query->where('course_id', $course);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('subjects.index', compact('subjects'));
+        return view('admin.subjects', compact('subjects'));
     }
 
-    // Show the subject creation form
-    public function create()
+    public function create(): View
     {
-        return view('subjects.create');
+        return view('admin.subjects');
     }
 
-    // Validate input and save a new subject record
-    public function store(Request $request)
+    public function store(StoreSubjectRequest $request): RedirectResponse
     {
-        $validatedData = $request->validate([
-            'teacher_id' => 'required|exists:teachers,id',
-            'name' => 'required|string|max:100',
-            'code' => 'required|string|max:10',
-            'units' => 'required|integer'
-        ]);
+        Subject::create($request->validated());
 
-        Subject::create($validatedData);
-
-        return redirect()->route('subjects.index')
-            ->with('message', 'Created Successfully');
+        return redirect()->route('admin.subjects.index')->with('success', 'Subject created successfully.');
     }
 
-    // Show details for a single subject
-    public function show(string $id)
+    public function show(Subject $subject): View
     {
-        $subject = Subject::findOrFail($id);
-
-        return view('subjects.show', compact('subject'));
+        return view('admin.subjects', compact('subject'));
     }
 
-    // Show the subject edit form
-    public function edit(string $id)
+    public function edit(Subject $subject): View
     {
-        $subject = Subject::findOrFail($id);
-
-        return view('subjects.edit', compact('subject'));
+        return view('admin.subjects', compact('subject'));
     }
 
-    // Validate and update an existing subject record
-    public function update(Request $request, string $id)
+    public function update(UpdateSubjectRequest $request, Subject $subject): RedirectResponse
     {
-        $subject = Subject::findOrFail($id);
+        $subject->update($request->validated());
 
-        $validatedData = $request->validate([
-            'teacher_id' => 'required|exists:teachers,id',
-            'name' => 'required|string|max:100',
-            'code' => 'required|string|max:10',
-            'units' => 'required|integer'
-        ]);
-
-        $subject->update($validatedData);
-
-        return redirect()->route('subjects.index')
-            ->with('message', 'Updated Successfully');
+        return redirect()->route('admin.subjects.index')->with('success', 'Subject updated successfully.');
     }
 
-    // Delete a subject record
-    public function destroy(string $id)
+    public function destroy(Subject $subject): RedirectResponse
     {
-        $subject = Subject::findOrFail($id);
         $subject->delete();
 
-        return redirect()->route('subjects.index')
-            ->with('message', 'Deleted Successfully');
+        return redirect()->route('admin.subjects.index')->with('success', 'Subject deleted successfully.');
     }
 }

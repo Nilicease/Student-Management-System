@@ -15,6 +15,10 @@ class Teacher extends Model
         'is_active'
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     // Link teacher to a user account
     public function user()
     {

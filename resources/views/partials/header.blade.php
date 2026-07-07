@@ -3,33 +3,34 @@
 @endphp
 
 @if($role === 'admin')
-    <div class="d-flex min-vh-100 bg-white">
-        <aside class="bg-dark text-white p-3" style="width: 260px; min-height: 100vh;">
-            <h4 class="mb-4">Admin Panel</h4>
-            <nav class="nav flex-column gap-2">
-                <a class="nav-link text-white-50" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                <a class="nav-link text-white-50" href="{{ route('admin.users') }}">Users</a>
-                <a class="nav-link text-white-50" href="{{ route('admin.teachers') }}">Teachers</a>
-                <a class="nav-link text-white-50" href="{{ route('admin.students') }}">Students</a>
-                <a class="nav-link text-white-50" href="{{ route('admin.subjects') }}">Subjects</a>
-                <a class="nav-link text-white-50" href="{{ route('admin.courses') }}">Courses</a>
-                <a class="nav-link text-white-50" href="{{ route('admin.profile') }}">Profile</a>
-            </nav>
-                <form action="{{ route('logout') }}" method="post">
-                    @csrf
-                    <button type="submit" class="nav-link text-white-50 p-0">Logout</button>
-                </form>
-        </aside>
-
-        <div class="flex-grow-1">
-            <header class="bg-white border-bottom p-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Welcome, Admin</h5>
-                    <a href="#" class="btn btn-outline-dark btn-sm">Logout</a>
-                </div>
-            </header>
+    <aside id="adminSidebar" class="collapse d-lg-block bg-dark text-white p-3" style="width: 260px; min-height: 100vh;">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <div class="rounded-circle bg-primary-subtle p-2 text-primary">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <div>
+                <h5 class="mb-0">Admin</h5>
+                <small class="text-white-50">Control Center</small>
+            </div>
         </div>
-    </div>
+
+        <nav class="nav flex-column gap-2">
+            <a class="nav-link text-white-50 rounded px-3 py-2 {{ request()->routeIs('admin.dashboard') ? 'bg-primary text-white' : '' }}" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+            <a class="nav-link text-white-50 rounded px-3 py-2 {{ request()->routeIs('admin.users*') ? 'bg-primary text-white' : '' }}" href="{{ route('admin.users.index') }}"><i class="bi bi-people me-2"></i>Users</a>
+            <a class="nav-link text-white-50 rounded px-3 py-2 {{ request()->routeIs('admin.teachers*') ? 'bg-primary text-white' : '' }}" href="{{ route('admin.teachers.index') }}"><i class="bi bi-person-badge me-2"></i>Teachers</a>
+            <a class="nav-link text-white-50 rounded px-3 py-2 {{ request()->routeIs('admin.students*') ? 'bg-primary text-white' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-mortarboard me-2"></i>Students</a>
+            <a class="nav-link text-white-50 rounded px-3 py-2 {{ request()->routeIs('admin.courses*') ? 'bg-primary text-white' : '' }}" href="{{ route('admin.courses.index') }}"><i class="bi bi-journals me-2"></i>Courses</a>
+            <a class="nav-link text-white-50 rounded px-3 py-2 {{ request()->routeIs('admin.subjects*') ? 'bg-primary text-white' : '' }}" href="{{ route('admin.subjects.index') }}"><i class="bi bi-book me-2"></i>Subjects</a>
+            <a class="nav-link text-white-50 rounded px-3 py-2 {{ request()->routeIs('admin.profile') ? 'bg-primary text-white' : '' }}" href="{{ route('admin.profile') }}"><i class="bi bi-person-circle me-2"></i>Profile</a>
+        </nav>
+
+        <div class="mt-4 pt-3 border-top border-secondary">
+            <form action="{{ route('logout') }}" method="post">
+                @csrf
+                <button type="submit" class="btn btn-outline-light btn-sm w-100"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+            </form>
+        </div>
+    </aside>
 @else
     <header class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
         <div class="container">

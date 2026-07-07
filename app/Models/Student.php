@@ -11,6 +11,7 @@ class Student extends Model
         'user_id',
         'teacher_id',
         'subject_id',
+        'course_id',
         'name',
         'student_number',
         'course',
